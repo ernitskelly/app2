@@ -25,7 +25,8 @@ def load_LLM(openai_api_key):
     """Logic for loading the chain you want to use should go here."""
     # Make sure your openai_api_key is set as an environment variable
     llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=.7, openai_api_key=openai_api_key)
-    return llm
+except ValidationError as e:
+    st.error(f"Validation Error: {e}")
 
 st.set_page_config(page_title="Customer tailored content", page_icon=":robot:")
 st.header("Personaliseeritud turundusteksti konverter")
