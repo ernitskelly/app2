@@ -1,13 +1,14 @@
 import streamlit as st
 from langchain import PromptTemplate
-from langchain_community.llms import OpenAI  # Corrected import statement
+#from langchain.llms import OpenAI #so vananenud rida ning asendatud allolevaga
+from langchain_community.llms import OpenAI
 import os
 
 template = """
  You are a marketing copywriter with 20 years of experience. You are analyzing customer's background to write personalized product description that only this customer will receive; 
     PRODUCT input text: {content};
     CUSTOMER age group (y): {agegroup};
-    CUSTOMER main health_condition: {health_condition};
+    CUSTOMER main Hobby: {health_condition};
     TASK: Write a product description that is tailored into this customer's Age group and health_condition. Use age group specific slang.;
     FORMAT: Present the result in the following order: (PRODUCT DESCRIPTION), (BENEFITS), (USE CASE);
     PRODUCT DESCRIPTION: describe the product in 5 sentences;
@@ -46,7 +47,7 @@ def get_api_key():
     if openai_api_key:
         return openai_api_key
     # If OPENAI_API_KEY environment variable is not set, prompt user for input
-    input_text = st.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
+    input_text = streamlit.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
     return input_text
 
 openai_api_key = get_api_key()
@@ -58,7 +59,7 @@ with col1:
         ('9-15', '16-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-100'))
     
 def get_hobby():
-    input_text = st.text_input(label="Customers main health_condition", key="hobby_input")
+    input_text = st.text_input(label="Customers health_condition", key="hobby_input")
     return input_text
 
 hobby_input = get_hobby()
@@ -83,4 +84,13 @@ st.markdown("### Your customer tailored content:")
 
 if content_input:
 #    if not openai_api_key:
-#        st.warning('Please insert OpenAI API Key. Instructions [here](https://help.openai.com/en
+#        st.warning('Please insert OpenAI API Key. Instructions [here](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)', icon="⚠️")
+#        st.stop()
+
+    llm = load_LLM(openai_api_key=openai_api_key)
+
+    prompt_with_content = prompt.format(agegroup=option_agegroup, health_condition=hobby_input, content=content_input)
+
+    formatted_content = llm(prompt_with_content)
+
+    st.write(formatted_content)
