@@ -1,5 +1,6 @@
 import streamlit as st
 from langchain import PromptTemplate
+#from langchain.llms import OpenAI #so vananenud rida ning asendatud allolevaga
 from langchain_community.llms import OpenAI
 import os
 
@@ -21,6 +22,8 @@ prompt = PromptTemplate(
 )
 
 def load_LLM(openai_api_key):
+    """Logic for loading the chain you want to use should go here."""
+    # Make sure your openai_api_key is set as an environment variable
     llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=.7, openai_api_key=openai_api_key)
     return llm
 
@@ -30,7 +33,9 @@ st.header("Personaliseeritud turundusteksti konverter")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("Ettevõtte töötajate arv: Väike <50\nEttevõtte tegevusvaldkond: Farmatseutiliste toodete müük ja turundus\nToode: Retseptiravimid\nBränd/valmistaja: KellyPharma\nÄpi otstarve: Veebilehel kuvatavate tootetutvustustekstide personaliseerimine iga apteegikülastaja jaoks; väljundtekst on kohandatud kliendi a) terviseseisundi ja b) ravimi vajadustega; sisendtekstiks on neutraalses vormis ravimi üldine kirjeldus.\nÄriprotsess, mida äpp toetab: Turundustekstide loomine (copywriting) farmaatsiatoodetele\nÄpi kasutajad: Ettevõtte turundus- ja müügimeeskond\nÄpi kasutamise sammud: 1. Kasutaja valmistab ette ravimi kirjelduse (sisendteksti). 2. Määrab apteegikülastajatele vastavalt nende terviseseisundile ja ravivajadusele segmente. 3. Sisestab ükshaaval segmentide lõikes eeltoodud info äpi kasutajaliideses, saadab ära. 4. Kopeerib ükshaaval segmentide lõikes äpi väljundteksti vastavate ravimi tutvustuslehtede jaoks.\nÄpi eeldatav kasu (efekt): 1. Ettevõttel on võimalik pakkuda personaliseeritud ravimiteavet, mis vastab klientide individuaalsetele vajadustele ja terviseseisundile. 2. Turundus- ja müügimeeskond saab tõhusamalt luua sihitud turundustekste, mis aitavad suurendada müüki ja klientide kaasatust. 3. Kliendid saavad vastavalt oma terviseolukorrale selgemat ja kohandatud teavet ravimite kohta.")
+    st.markdown("Otstarve: tootetutvustustekstide personaliseerimine igale kliendile või kliendigruppidele; väljundtekst on kohandatud kliendi a) vanuserühmaga ja b) hobbitegevusega; sisendtekstiks on neutraalses vormis tootekirjeldus. \
+    \n\n Kasutusjuhend: 1) valmista ette tootekirjeldus (sisendtekst). 2) määra tarbijasegemendid lähtuvalt vanuserühma ja hobbide kombinatsioonidest. 3) sisesta ükshaaval tarbijasegmentide lõikes eeltoodud info äpi kasutajaliideses, saada ära. \
+    4) kopeeri ükshaaval tarbijasegmentide lõikes äpi väljundteksti kõnealuse toote tutvustuslehele.")
 
 with col2:
     st.image(image='pharmacy.jpg', caption='Pharmacy')
@@ -41,6 +46,7 @@ def get_api_key():
     openai_api_key = os.getenv("OPENAI_API_KEY")
     if openai_api_key:
         return openai_api_key
+    # If OPENAI_API_KEY environment variable is not set, prompt user for input
     input_text = st.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
     return input_text
 
@@ -69,14 +75,22 @@ if len(content_input.split(" ")) > 700:
     st.stop()
 
 def update_text_with_example():
-    st.session_state.content_input = "t shirts, all colors, cotton, responsible manufacturing"
+    print ("in updated")
+    st.session_state.content_input = "t shirts, all clolors, cotton, responsible manufacturing"
 
 st.button("*GENERATE TEXT*", type='secondary', help="Click to see an example of the content you will be converting.", on_click=update_text_with_example)
 
 st.markdown("### Your customer tailored content:")
 
 if content_input:
+#    if not openai_api_key:
+#        st.warning('Please insert OpenAI API Key. Instructions [here](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)', icon="⚠️")
+#        st.stop()
+
     llm = load_LLM(openai_api_key=openai_api_key)
+
     prompt_with_content = prompt.format(agegroup=option_agegroup, health_condition=hobby_input, content=content_input)
+
     formatted_content = llm(prompt_with_content)
+
     st.write(formatted_content)
