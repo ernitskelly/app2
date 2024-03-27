@@ -8,7 +8,7 @@ template = """
  You are a marketing copywriter with 20 years of experience. You are analyzing customer's background to write personalized product description that only this customer will receive; 
     PRODUCT input text: {content};
     CUSTOMER age group (y): {agegroup};
-    CUSTOMER main Hobby: {health_condition};
+    CUSTOMER main health_condition: {health_condition};
     TASK: Write a product description that is tailored into this customer's Age group and health_condition. Use age group specific slang.;
     FORMAT: Present the result in the following order: (PRODUCT DESCRIPTION), (BENEFITS), (USE CASE);
     PRODUCT DESCRIPTION: describe the product in 5 sentences;
@@ -59,7 +59,7 @@ with col1:
         ('9-15', '16-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-100'))
     
 def get_hobby():
-    input_text = st.text_input(label="Customers health_condition", key="hobby_input")
+    input_text = st.text_input(label="Customers main health_condition", key="hobby_input")
     return input_text
 
 hobby_input = get_hobby()
