@@ -1,6 +1,6 @@
 import streamlit as st
 from langchain import PromptTemplate
-from langchain_community.llms import OpenAI  # Update import statement
+from langchain_community.llms import OpenAI  # Corrected import statement
 import os
 
 template = """
@@ -83,13 +83,4 @@ st.markdown("### Your customer tailored content:")
 
 if content_input:
 #    if not openai_api_key:
-#        st.warning('Please insert OpenAI API Key. Instructions [here](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)', icon="⚠️")
-#        st.stop()
-
-    llm = load_LLM(openai_api_key=openai_api_key)
-
-    prompt_with_content = prompt.format(agegroup=option_agegroup, health_condition=hobby_input, content=content_input)
-
-    formatted_content = llm(prompt_with_content)
-
-    st.write(formatted_content)
+#        st.warning('Please insert OpenAI API Key. Instructions [here](https://help.openai.com/en
