@@ -38,7 +38,7 @@ with col1:
     4) kopeeri ükshaaval tarbijasegmentide lõikes äpi väljundteksti kõnealuse toote tutvustuslehele.")
 
 with col2:
-    st.image(image='pharmacy.jpg', caption='Health condition')
+    st.image(image='companylogo.jpg', caption='Natural and healthy shirts for everybody')
 
 st.markdown("## Enter Your Content To Convert")
 
@@ -47,7 +47,7 @@ def get_api_key():
     if openai_api_key:
         return openai_api_key
     # If OPENAI_API_KEY environment variable is not set, prompt user for input
-    input_text = streamlit.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
+    input_text = st.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input")
     return input_text
 
 openai_api_key = get_api_key()
