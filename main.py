@@ -1,19 +1,18 @@
 import streamlit as st
 from langchain import PromptTemplate
-#from langchain.llms import OpenAI #so vananenud rida ning asendatud allolevaga
 from langchain_community.llms import OpenAI
 import os
 
 template = """
- You are a marketing copywriter with 20 years of experience. You are analyzing customer's background to write personalized product description that only this customer will receive; 
-    PRODUCT input text: {content};
-    CUSTOMER age group (y): {agegroup};
-    CUSTOMER main Hobby: {health_condition};
-    TASK: Write a product description that is tailored into this customer's Age group and health_condition. Use age group specific slang.;
-    FORMAT: Present the result in the following order: (PRODUCT DESCRIPTION), (BENEFITS), (USE CASE);
-    PRODUCT DESCRIPTION: describe the product in 5 sentences;
-    BENEFITS: describe in 3 sentences why this product is perfect considering customers age group and health_condition;
-    USE CASE: write a story in 5 sentences, of an example weekend activity taking into account health_condition {health_condition} and age {agegroup}, write a story in first person, example "I started my Saturday morning with ...";
+You are a marketing copywriter with 20 years of experience. You are analyzing the customer's background to write a personalized product description that only this customer will receive;
+PRODUCT input text: {content};
+CUSTOMER age group (y): {agegroup};
+CUSTOMER main Health Condition: {health_condition};
+TASK: Write a product description that is tailored to this customer's Age group and health_condition. Use age group-specific slang.;
+FORMAT: Present the result in the following order: (PRODUCT DESCRIPTION), (BENEFITS), (USE CASE);
+PRODUCT DESCRIPTION: describe the product in 5 sentences;
+BENEFITS: describe in 3 sentences why this product is perfect considering the customer's age group and health_condition;
+USE CASE: write a story in 5 sentences, of an example weekend activity taking into account health_condition {health_condition} and age {agegroup}, write a story in the first person, for example, "I started my Saturday morning with ...";
 """
 
 prompt = PromptTemplate(
@@ -28,14 +27,14 @@ def load_LLM(openai_api_key):
     return llm
 
 st.set_page_config(page_title="Customer tailored content", page_icon=":robot:")
-st.header("Personaliseeritud turundusteksti konverter")
+st.header("Personalized marketing text converter")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("Otstarve: tootetutvustustekstide personaliseerimine igale kliendile või kliendigruppidele; väljundtekst on kohandatud kliendi a) vanuserühmaga ja b) hobbitegevusega; sisendtekstiks on neutraalses vormis tootekirjeldus. \
-    \n\n Kasutusjuhend: 1) valmista ette tootekirjeldus (sisendtekst). 2) määra tarbijasegemendid lähtuvalt vanuserühma ja hobbide kombinatsioonidest. 3) sisesta ükshaaval tarbijasegmentide lõikes eeltoodud info äpi kasutajaliideses, saada ära. \
-    4) kopeeri ükshaaval tarbijasegmentide lõikes äpi väljundteksti kõnealuse toote tutvustuslehele.")
+    st.markdown("Purpose: Personalize product description texts for each customer or customer groups; the output text is customized to the customer's a) age group and b) main health condition; the input text is a neutral product description. \
+    \n\n Instructions: 1) prepare the product description (input text). 2) assign consumer segments based on age group and combinations of hobbies. 3) enter the information provided above one by one in the app user interface, send away. \
+    4) copy the output text from the app one by one for the respective product introduction pages.")
 
 with col2:
     st.image(image='companylogo.jpg', caption='Natural and healthy shirts for everybody')
@@ -58,11 +57,11 @@ with col1:
         'Which age group would you like your content to target?',
         ('9-15', '16-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80-100'))
     
-def get_hobby():
-    input_text = st.text_input(label="Customers health_condition", key="hobby_input")
+def get_health_condition():
+    input_text = st.text_input(label="Customers health_condition", key="health_condition_input")
     return input_text
 
-hobby_input = get_hobby()
+health_condition = get_health_condition()
 
 def get_text():
     input_text = st.text_area(label="Content Input", label_visibility='collapsed', placeholder="Your content...", key="content_input")
@@ -75,9 +74,14 @@ if len(content_input.split(" ")) > 700:
     st.stop()
 
 def update_text_with_example():
-    print ("in updated")
-    content_input = "t shirts, all clolors, cotton, responsible manufacturing"
+    st.session_state.content_input = "T-shirts, available in all colors, made of cotton, manufactured responsibly."
 
 st.button("*GENERATE TEXT*", type='secondary', help="Click to see an example of the content you will be converting.", on_click=update_text_with_example)
 
-st.mark
+st.markdown("### Your customer tailored content:")
+
+if content_input:
+    llm = load_LLM(openai_api_key=openai_api_key)
+    prompt_with_content = prompt.format(agegroup=option_agegroup, health_condition=health_condition, content=content_input)
+    formatted_content = llm(prompt_with_content)
+    st.write(formatted_content)
