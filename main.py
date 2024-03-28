@@ -33,9 +33,7 @@ st.header("Personaliseeritud turundusteksti konverter")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("Otstarve: tootetutvustustekstide personaliseerimine igale kliendile või kliendigruppidele; väljundtekst on kohandatud kliendi a) vanuserühmaga ja b) hobbitegevusega; sisendtekstiks on neutraalses vormis tootekirjeldus. \
-    \n\n Kasutusjuhend: 1) valmista ette tootekirjeldus (sisendtekst). 2) määra tarbijasegemendid lähtuvalt vanuserühma ja hobbide kombinatsioonidest. 3) sisesta ükshaaval tarbijasegmentide lõikes eeltoodud info äpi kasutajaliideses, saada ära. \
-    4) kopeeri ükshaaval tarbijasegmentide lõikes äpi väljundteksti kõnealuse toote tutvustuslehele.")
+    st.markdown("Otstarve: Veebilehel kuvatavate tootetutvustustekstide personaliseerimine iga apteegikülastaja jaoks; väljundtekst on kohandatud kliendi a) terviseseisundi ja b) ravimi vajadustega; sisendtekstiks on neutraalses vormis ravimi üldine kirjeldus.")
 
 with col2:
     st.image(image='pharmacy.jpg', caption='Pharmacy')
